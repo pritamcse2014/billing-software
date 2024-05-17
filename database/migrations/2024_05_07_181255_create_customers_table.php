@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('customer_email');
             $table->string('customer_phone_no');
             $table->integer('customer_bill');
+            $table->string('status')->default('Active');
             $table->timestamps();
         });
     }

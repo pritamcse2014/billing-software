@@ -14,4 +14,9 @@ class Customer extends Model
         'customer_phone_no',
         'customer_bill',
     ];
+
+    public function websites()
+    {
+        return $this->belongsToMany(Website::class);
+    }
 }

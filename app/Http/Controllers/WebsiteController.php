@@ -90,8 +90,14 @@ class WebsiteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Website $website)
+    public function destroy($id)
     {
-        //
+        $website = Website::find($id);
+        if (!$website) {
+            return redirect()->back()->with('error', 'Customer not found.');
+        }
+        $website->delete();
+
+        return redirect()->route('websites.index')->with('success', 'Customer deleted successfully');
     }
 }

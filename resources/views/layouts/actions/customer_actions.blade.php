@@ -1,7 +1,7 @@
 <a href="{{ route('customers.edit', $id) }}">
     <i class="fa-solid fa-pen-to-square" style="color: #74C0FC;"></i>
 </a>
- || 
+    ||  
 <form method="POST" action="{{ route('customers.destroy', $id) }}" style="display: inline;">
     @csrf
     @method('DELETE')

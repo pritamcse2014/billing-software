@@ -11,6 +11,7 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Builder;
 
 class WebsitesDataTable extends DataTable
 {
@@ -22,8 +23,29 @@ class WebsitesDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'websites.datatables_actions')
-            ->setRowId('id');
+            ->addColumn('action', function ($row) {
+                $file_name = 'websites';
+                return '<a href="' . route($file_name.'.edit', $row->id) . '">
+                            <i class="fa-solid fa-pen-to-square" style="color: #74C0FC;"></i>
+                        </a>
+                            ||  
+                        <form method="POST" action="' . route($file_name.'.destroy', $row->id) . '" style="display: inline;">
+                            ' . csrf_field() . '
+                            ' . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-link p-0" onclick="return confirm(\'Are you sure you want to delete this item?\')">
+                                <i class="fa-solid fa-trash" style="color: #ff2e2e;"></i>
+                            </button>
+                        </form>';
+            })
+            ->addColumn('status', function ($row) {
+                return $row->status == 'Active' ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+            })
+            ->addColumn('checkbox', function ($row) {
+                return '<input type="checkbox" value="'.$row->id.'">';
+            })
+            
+            ->setRowId('id')
+            ->rawColumns(['action', 'status','checkbox']);
     }
 
     /**
@@ -46,13 +68,15 @@ class WebsitesDataTable extends DataTable
                     //->dom('Bfrtip')
                     ->orderBy(1)
                     ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
+                    ->parameters([
+                        'buttons' => [
+                            Button::make('excel'),
+                            Button::make('csv'),
+                            Button::make('pdf'),
+                            Button::make('print'),
+                            Button::make('reset'),
+                            Button::make('reload')
+                        ],
                     ]);
     }
 
@@ -62,15 +86,26 @@ class WebsitesDataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::computed('checkbox')
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
+
             Column::make('id'),
             Column::make('website_name'),
             Column::make('website_url'),
             Column::make('website_bill'),
+            Column::computed('status')
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
             Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
         ];
     }
 

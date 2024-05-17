@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('website_url');
             $table->string('website_bill');
             $table->string('website_end_date');
+            $table->string('status')->default('Active');
             $table->timestamps();
         });
     }

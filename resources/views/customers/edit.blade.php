@@ -27,7 +27,6 @@
             <label for="customer_bill">Customer Bill</label>
             <input type="tel" class="form-control" id="customer_bill" name="customer_bill" value="{{ isset($customer) ? $customer->customer_bill : '' }}">
         </div>
-      
 
         <div class="mt-2">
             <button type="submit" class="btn btn-primary btn-sm">{{ isset($customer) ? 'Update' : 'Submit' }}</button>
